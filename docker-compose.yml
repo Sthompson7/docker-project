@@ -1,7 +1,7 @@
 services:
   # PHP Application
   php-app:
-    image: shelby/docker2:1
+    image: oluwaseuna/docker2:latest
     container_name: php-app
     ports:
       - "80:80"  # Expose port 80 on the container to port 8080 on localhost
