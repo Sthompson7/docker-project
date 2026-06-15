@@ -35,23 +35,17 @@ pipeline {
             }
         }
 
-        stage("deployCompose") {
+                stage("deployCompose") {
             steps {
                 script {
-                    echo "Deploying with Docker Compose..."
+                    echo "=== Deploy Stage - Connection Test ==="
                     sh """
-                        # Copy files to EC2 instance
-                        scp -o StrictHostKeyChecking=no ${DotEnvFile} ${DockerComposeFile} ubuntu@${EC2_IP}:/home/ubuntu/
+                        echo "Target IP: ${EC2_IP}"
+                        echo "Testing SSH connection..."
                         
-                        # Deploy using docker compose
-                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "
-                            cd /home/ubuntu && \
-                            docker compose -f ${DockerComposeFile} --env-file ${DotEnvFile} down && \
-                            docker compose -f ${DockerComposeFile} --env-file ${DotEnvFile} up -d
-                        "
+                        ssh -o StrictHostKeyChecking=no -o ConnectTimeout=15 -v ubuntu@${EC2_IP} 'echo ✅ SSH Connected' || echo "❌ SSH Failed"
                     """
                 }
             }
         }
-    }
 }
